@@ -1,14 +1,15 @@
 # nimiq-miners-bot
 
-Bot for nimiq miners Channel
+Bot for nimiq miners Channel <br>
+<https://t.me/NimiqMiners>
 
 # Requirements
 
-1. Bottoken @botFather
+1. Bot token @botFather
 2. Golang (Dev/Compile)
 3. Docker
 
-# run bot
+# Run bot
 
 ## Binary
 
@@ -20,8 +21,6 @@ go build .
 
 ## Golang
 
-Run bot with golang:
-
 ```
 export BOT_TOKEN="BOT_TOKEN"
 go run main.go
@@ -29,6 +28,6 @@ go run main.go
 
 ## Docker
 
-Run bot with docker, don't forget to add bot token in `docker-compose.yml`
+Run bot with docker-compose <br> Don't forget copy and add bot token in `docker-compose.yml`
 
 ``` docker-compose build && docker-compose up -d ```
