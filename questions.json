@@ -1,0 +1,38 @@
+{
+  "1": {
+    "question": "When is nimiq going Proof of stake ?",
+    "answer": "There is no official date for Nimiq 2.0!"
+  },
+  "2": {
+    "question": "Will nimiq continue to use mining with Proof Of stake?",
+    "answer": "No, Nimiq will go full proof of stake(PoS) after that you will not be able to mine anymore!"
+  },
+  "3": {
+    "question": "Can i mine on a phone?",
+    "answer": " Yes that is possible, BUT Don't do it! it will give you almost no reward and is bad for your phone."
+  },
+  "4": {
+    "question": "Should i mine with my laptop?",
+    "answer": "IF your laptop has really good cooling you could mine on it. But overall we do not recommend it."
+  },
+  "5": {
+    "question": "Should i mine with only CPU?",
+    "answer": "No, we do not reccoment anyone to do CPU mining only the rewards are low."
+  },
+  "6": {
+    "question": "Can i mine with GPU?",
+    "answer": "Yes, GPU and FPGA are most efficient right now! mining on CPU will probably cost you money."
+  },
+  "7": {
+    "question": "What is the easiest miner to use?",
+    "answer": "https://hub.shortnim.me/setupMiner This is a easy and fast wat to setup a gpu/cpu miner for new users"
+  },
+  "8": {
+    "question": "What mining pools are available?",
+    "answer": "An easy to use interface for pools can be found here: https://hub.shortnim.me and if you want to see all pools: https://miningpoolstats.stream/nimiq Remember try to mine on lower hashrate pools to secure the network!"
+  },
+  "9": {
+    "question": "How much will i earn by mining?",
+    "answer": "You can calculate your mining reward with the following calculator: https://calc.nimiqx.com/`"
+  }
+}

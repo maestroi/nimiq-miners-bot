@@ -1,56 +1,79 @@
 package main
 
 import (
+	"encoding/json"
+	"fmt"
+	"io/ioutil"
 	"log"
-	"os"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
+	"github.com/mitchellh/mapstructure"
+	"github.com/tkanos/gonfig"
 )
 
+const (
+	configFile   = "./config.json"
+	questionFile = "./questions.json"
+)
+
+func GetConfig(params ...string) Configuration {
+	configuration := Configuration{}
+	fileName := configFile
+	err := gonfig.GetConf(fileName, &configuration)
+	if err != nil {
+		log.Fatal("Error Loading config: ", err)
+	}
+	log.Println("Config loaded succesfully")
+	return configuration
+}
+
+func ReadQuestions() string {
+	content, err := ioutil.ReadFile(questionFile)
+	if err != nil {
+		log.Fatal("Error when opening file: ", err)
+	}
+
+	m := map[string]interface{}{}
+	err = json.Unmarshal([]byte(content), &m)
+	if err != nil {
+		log.Fatal("We can't unmarshal data!")
+	}
+
+	question := Questions{}
+
+	questionString := ""
+
+	for _, name := range m {
+		mapstructure.Decode(name, &question)
+
+		qs := fmt.Sprintf("<b>Question</b>: %s \n<b>Answer</b>: %s\n\n", question.Question, question.Answer)
+
+		questionString += qs
+	}
+
+	return questionString
+}
+
 func main() {
-	FAQText := `FAQ:
-	Question: When PoS!?
-	Answer: There is no official date for Nimiq 2.0!
-
-	Question: Will Nimiq always allow mining?
-	Answer: No, Nimiq will go full proof of stake(PoS) after that you will not be able to mine anymore!
-	
-	Question: Can i mine on a phone?
-	Answer: Yes that is possible, BUT Don't do it! it will give you almost no reward and is bad for your phone.
-	
-	Question: Should i mine with my laptop?
-	Answer: IF your laptop has really good cooling you could mine on it. But overall we do not recommend it.
-	
-	Question: Can i mine with GPU?
-	Answer: Yes, GPU and FPGA are most efficient right now! mining on CPU will probably cost you money.
-	
-	Question: What is the easiest miner to use?
-	Answer: https://hub.shortnim.me/setupMiner This is a easy and fast wat to setup a gpu/cpu miner for new users
-	
-	Question: At what pools can i mine?
-	Answer: An easy to use interface for pools can be found here: https://hub.shortnim.me and if you want to see all pools: https://miningpoolstats.stream/nimiq
-	Remember try to mine on lower hashrate pools to secure the network!
-	
-	Question: How much will i earn by mining?
-	Answer: You can calculate your mining reward with the following calculator: https://calc.nimiqx.com/`
-
+	log.Println("Bot succesfully started!")
 	WelcomeText := `Welcome Nimiq Miner!
 	Please use /faq First before asking any questions!
 
 	Remember: Mining with Nimiq stops when the NIMIQ 2.0 is launched this will be full POS, but no date yet!`
 
-	bot, err := tgbotapi.NewBotAPI(os.Getenv("BOT_TOKEN"))
+	config := GetConfig()
+
+	bot, err := tgbotapi.NewBotAPI(config.BOT_TOKEN)
 	if err != nil {
 		log.Printf("Did you add a bot token!?")
 		log.Panic(err)
 	}
+	bot.Debug = bool(config.BOT_DEBUG)
 
-	bot.Debug = false
-
-	log.Printf("Authorized on account %s", bot.Self.UserName)
+	log.Printf("Authorized on account %s ID: %v", bot.Self.UserName, bot.Self.ID)
 
 	u := tgbotapi.NewUpdate(0)
-	u.Timeout = 60
+	u.Timeout = 30
 
 	updates, err := bot.GetUpdatesChan(u)
 
@@ -59,7 +82,7 @@ func main() {
 			continue
 		}
 
-		log.Printf("[%s] %s", update.Message.From.UserName, update.Message.Text)
+		log.Printf("User: %s | command: %s | chatID: %v |", update.Message.From.UserName, update.Message.Text, update.Message.MessageID)
 
 		if update.Message.NewChatMembers != nil {
 			log.Println(update.Message.NewChatMembers)
@@ -75,7 +98,7 @@ func main() {
 				msg.Text = "type /faq or /status."
 			case "faq":
 				msg.ParseMode = "html"
-				msg.Text = FAQText
+				msg.Text = ReadQuestions()
 			case "welcome":
 				msg.ParseMode = "html"
 				msg.Text = WelcomeText

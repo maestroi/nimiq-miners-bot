@@ -16,3 +16,4 @@
 run.sh
 docker-compose.yml
 docker-stack.yml
+config.json
